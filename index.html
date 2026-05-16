@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re:Voice〜再出発の相談窓口〜</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F7F1E8;
+  --paper2:  #EEE6D4;
+  --paper3:  #E4D9C3;
+  --ink:     #2B2318;
+  --ink-l:   #6B5A45;
+  --ink-ll:  #9E8B76;
+  --rust:    #B85C38;
+  --rust-d:  #8E3E20;
+  --rust-l:  #D9845E;
+  --moss:    #5A7A5C;
+  --gold:    #B8933A;
+  --gold-l:  #D4B06A;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.9;
+  overflow-x: hidden;
+}
+
+/* SVG paper grain texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  background: var(--paper);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 24px 100px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+
+/* Ink brush stroke background */
+.hero-brush {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(700px, 100vw);
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.hero-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--rust);
+  margin-bottom: 24px;
+  opacity: 0; animation: rise 0.9s ease 0.2s forwards;
+  position: relative;
+}
+
+.hero-label::before, .hero-label::after {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 1px;
+  background: var(--rust-l);
+  vertical-align: middle;
+  margin: 0 10px;
+  opacity: 0.6;
+}
+
+.hero-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(32px, 7vw, 62px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 8px;
+  opacity: 0; animation: rise 0.9s ease 0.4s forwards;
+}
+
+.hero-title .accent {
+  color: var(--rust);
+  position: relative;
+  display: inline-block;
+}
+
+/* Hand-drawn underline SVG */
+.hero-title .accent::after {
+  content: '';
+  position: absolute;
+  left: -4px; bottom: -6px;
+  width: calc(100% + 8px); height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'%3E%3Cpath d='M2 8 C20 4 40 10 60 7 C80 4 100 9 120 6 C140 3 160 9 180 7 C190 6 196 8 198 8' fill='none' stroke='%23D9845E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+  background-size: 100% 100%;
+}
+
+.hero-sub {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(14px, 2.5vw, 19px);
+  color: var(--ink-ll);
+  margin-bottom: 32px;
+  letter-spacing: 0.08em;
+  opacity: 0; animation: rise 0.9s ease 0.55s forwards;
+}
+
+.hero-copy {
+  font-size: clamp(13px, 2vw, 15px);
+  color: var(--ink-l);
+  max-width: 480px;
+  line-height: 2.2;
+  margin: 0 auto 44px;
+  opacity: 0; animation: rise 0.9s ease 0.65s forwards;
+}
+
+/* Stamp */
+.stamp {
+  width: 148px; height: 148px;
+  border-radius: 50%;
+  border: 3px solid var(--rust);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--rust);
+  margin-bottom: 44px;
+  position: relative;
+  opacity: 0; animation: rise 0.9s ease 0.75s forwards;
+  background: var(--paper);
+}
+
+.stamp::before {
+  content: '';
+  position: absolute; inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed var(--rust-l);
+}
+
+/* Stamp rotation text */
+.stamp-arc {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.stamp .s-main {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 34px; font-weight: 700;
+  line-height: 1; color: var(--rust);
+  position: relative; z-index: 1;
+}
+.stamp .s-unit { font-size: 14px; color: var(--rust); }
+.stamp .s-pre { font-size: 10px; letter-spacing: 0.1em; color: var(--rust-l); margin-bottom: 2px; }
+.stamp .s-post { font-size: 9px; color: var(--ink-ll); margin-top: 3px; }
+
+/* CTA button — woodblock print style */
+.btn-main {
+  display: inline-block;
+  background: var(--rust);
+  color: white;
+  text-decoration: none;
+  padding: 17px 50px;
+  font-size: 15px; font-weight: 500;
+  letter-spacing: 0.1em;
+  position: relative;
+  opacity: 0; animation: rise 0.9s ease 0.9s forwards;
+  transition: all 0.2s ease;
+  clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+}
+
+.btn-main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--rust-d);
+  transform: translate(4px, 4px);
+  z-index: -1;
+  clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+}
+
+.btn-main:hover { transform: translate(-2px, -2px); }
+.btn-main:active { transform: translate(2px, 2px); }
+.btn-main:active::after { transform: translate(2px, 2px); }
+
+.hero-fine {
+  font-size: 11px; color: var(--ink-ll);
+  margin-top: 14px;
+  opacity: 0; animation: rise 0.9s ease 1s forwards;
+}
+
+/* Torn edge divider */
+.torn {
+  width: 100%; overflow: hidden; line-height: 0;
+  position: relative; z-index: 1;
+}
+.torn svg { display: block; width: 100%; }
+
+/* ===== SECTIONS SHARED ===== */
+.sec { padding: 72px 24px; }
+.sec-inner { max-width: 640px; margin: 0 auto; }
+.sec-inner.wide { max-width: 760px; }
+
+.eyebrow {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px; letter-spacing: 0.35em;
+  color: var(--rust); display: block; margin-bottom: 14px;
+}
+
+.sec-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 400; color: var(--ink);
+  line-height: 1.6; margin-bottom: 28px;
+}
+
+/* ===== INTRO ===== */
+.intro { background: var(--paper2); }
+.intro .sec-inner { text-align: center; }
+.intro p { font-size: 14px; color: var(--ink-l); line-height: 2.2; text-align: left; }
+
+/* ===== FOR WHO ===== */
+.for-who { background: var(--paper); }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px; margin-top: 32px;
+}
+
+.card {
+  background: var(--paper2);
+  padding: 20px 22px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  /* Slightly uneven border like hand-cut card */
+  clip-path: polygon(0 0, 100% 2px, 100% 100%, 2px 100%);
+}
+
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--rust-l);
+}
+
+.card:hover {
+  transform: translateY(-3px) rotate(0.4deg);
+  box-shadow: 3px 6px 20px rgba(43,35,24,0.1);
+}
+
+.card-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.card p { font-size: 13.5px; color: var(--ink-l); line-height: 1.85; }
+
+/* ===== FLOW ===== */
+.flow { background: var(--ink); }
+.flow .eyebrow { color: var(--gold-l); }
+.flow .sec-title { color: var(--paper); margin-bottom: 48px; }
+
+.steps { display: flex; flex-direction: column; }
+
+.step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  padding-bottom: 36px;
+}
+.step:last-child { padding-bottom: 0; }
+
+.step-l { display: flex; flex-direction: column; align-items: center; }
+
+.step-circle {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--rust-l);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 22px; color: var(--rust-l);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Rough circle via SVG */
+.step-circle::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(184,92,56,0.3);
+}
+
+.step-connector {
+  flex: 1; width: 1px; margin-top: 10px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(184,147,58,0.4) 0, rgba(184,147,58,0.4) 4px,
+    transparent 4px, transparent 9px
+  );
+  min-height: 16px;
+}
+
+.step:last-child .step-connector { display: none; }
+
+.step-body { padding-top: 12px; }
+.step-title { font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 600; color: var(--paper); margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: rgba(247,241,232,0.58); line-height: 1.95; }
+
+/* ===== REWARD + FAQ ===== */
+.reward-faq { background: var(--paper2); }
+
+/* Aged paper receipt look */
+.receipt {
+  background: var(--paper);
+  padding: 40px 32px 36px;
+  margin-bottom: 52px;
+  text-align: center;
+  position: relative;
+  border: 1px solid var(--paper3);
+}
+
+/* Zigzag top */
+.receipt::before {
+  content: '';
+  position: absolute; top: -8px; left: 0; right: 0;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8'%3E%3Cpath d='M0 8 L8 0 L16 8' fill='%23F7F1E8'/%3E%3C/svg%3E") repeat-x top;
+  background-size: 16px 8px;
+}
+/* Zigzag bottom */
+.receipt::after {
+  content: '';
+  position: absolute; bottom: -8px; left: 0; right: 0;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8'%3E%3Cpath d='M0 0 L8 8 L16 0' fill='%23F7F1E8'/%3E%3C/svg%3E") repeat-x bottom;
+  background-size: 16px 8px;
+}
+
+.receipt-label { font-family: 'Noto Sans JP', sans-serif; font-size: 11px; letter-spacing: 0.2em; color: var(--ink-ll); margin-bottom: 12px; display: block; }
+.receipt-amount {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 60px; font-weight: 700;
+  color: var(--rust); line-height: 1;
+}
+.receipt-amount .yen { font-size: 22px; vertical-align: top; padding-top: 12px; display: inline-block; }
+.receipt-amount .unit { font-size: 22px; }
+.receipt-desc { font-size: 13px; color: var(--ink-l); margin: 12px 0 16px; }
+.receipt-notes { font-size: 11.5px; color: var(--ink-ll); line-height: 2.1; }
+
+/* Divider */
+.receipt-divider {
+  border: none;
+  border-top: 1px dashed var(--paper3);
+  margin: 24px 0;
+}
+
+.faq-item { padding: 20px 0; border-bottom: 1px dashed rgba(43,35,24,0.12); }
+.faq-item:first-of-type { border-top: 1px dashed rgba(43,35,24,0.12); }
+
+.faq-q {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--rust); margin-bottom: 8px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.faq-q-tag { font-size: 17px; flex-shrink: 0; }
+.faq-a { font-size: 13px; color: var(--ink-l); line-height: 1.95; padding-left: 27px; }
+
+/* ===== NOTICE ===== */
+.notice { background: var(--paper); }
+.notice-box {
+  max-width: 600px; margin: 0 auto;
+  border: 1px solid var(--paper3);
+  padding: 32px;
+  background: var(--paper2);
+  position: relative;
+}
+/* Corner dog-ear */
+.notice-box::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 28px; height: 28px;
+  background: linear-gradient(225deg, var(--paper) 50%, transparent 50%);
+}
+
+.notice-box h3 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px; letter-spacing: 0.12em;
+  color: var(--ink); margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(43,35,24,0.15);
+}
+
+.notice-box ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.notice-box li { font-size: 12px; color: var(--ink-l); line-height: 1.9; display: flex; gap: 10px; }
+.notice-box li::before { content: '◇'; color: var(--rust-l); font-size: 9px; flex-shrink: 0; margin-top: 4px; }
+
+/* ===== SNS ===== */
+.sns-sec { background: var(--paper2); padding: 64px 24px; text-align: center; }
+.sns-inner { max-width: 480px; margin: 0 auto; }
+.sns-sec h3 { font-family: 'Noto Serif JP', serif; font-size: 20px; color: var(--ink); margin-bottom: 6px; }
+.sns-sec p { font-size: 12px; color: var(--ink-ll); margin-bottom: 28px; }
+.sns-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+.sns-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; font-size: 13px; font-weight: 500;
+  text-decoration: none; transition: all 0.2s ease;
+  border: 1.5px solid transparent;
+  position: relative;
+}
+
+.sns-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translate(3px, 3px);
+  z-index: -1;
+}
+
+.sns-x { background: #111; color: white; }
+.sns-x::after { background: #333; }
+.sns-note { background: var(--paper); color: var(--ink); border-color: var(--paper3); }
+.sns-note::after { background: var(--paper3); }
+.sns-line { background: #06C755; color: white; }
+.sns-line::after { background: #05A848; }
+.sns-btn:hover { transform: translate(-2px, -2px); }
+
+/* ===== CTA CLOSE ===== */
+.cta-close {
+  background: var(--paper);
+  padding: 88px 24px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+
+.cta-close::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184,92,56,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-close h2 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(22px, 4.5vw, 32px);
+  font-weight: 400; color: var(--ink);
+  line-height: 1.7; margin-bottom: 12px;
+}
+.cta-close p { font-size: 12px; color: var(--ink-ll); margin-bottom: 40px; }
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 24px;
+  background: var(--ink);
+  text-align: center;
+  font-size: 11px;
+  color: rgba(247,241,232,0.3);
+  letter-spacing: 0.08em;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.on { opacity: 1; transform: none; }
+
+/* stagger children */
+.stagger .reveal:nth-child(1) { transition-delay: 0s; }
+.stagger .reveal:nth-child(2) { transition-delay: 0.08s; }
+.stagger .reveal:nth-child(3) { transition-delay: 0.16s; }
+.stagger .reveal:nth-child(4) { transition-delay: 0.24s; }
+.stagger .reveal:nth-child(5) { transition-delay: 0.32s; }
+.stagger .reveal:nth-child(6) { transition-delay: 0.40s; }
+
+@media (max-width: 560px) {
+  .cards { grid-template-columns: 1fr; }
+  .sns-links { flex-direction: column; align-items: center; }
+  .stamp { width: 128px; height: 128px; }
+  .stamp .s-main { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <!-- Ink brush circle bg -->
+  <svg class="hero-brush" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M300 40 C430 35 560 130 562 300 C564 470 440 562 300 560 C160 558 36 468 38 300 C40 132 170 45 300 40 Z"
+      stroke="#2B2318" stroke-width="3" fill="none" stroke-dasharray="8 5"/>
+    <path d="M300 80 C415 76 530 155 532 300 C534 445 420 524 300 522 C180 520 66 444 68 300 C70 156 185 84 300 80 Z"
+      stroke="#2B2318" stroke-width="1.5" fill="none" opacity="0.5"/>
+  </svg>
+
+  <div class="hero-label">Re:Voice〜再出発の相談窓口〜</div>
+
+  <h1 class="hero-title">
+    お金や住まいの不安、<br>
+    <span class="accent">話してください。</span>
+  </h1>
+
+  <p class="hero-sub">あなたの「今」を、聴かせてください</p>
+
+  <p class="hero-copy">
+    誰にも言えずに抱え込んでいること、<br>
+    うまく言葉にならないこと、それでも大丈夫。<br>
+    あなたの声を、私たちに聴かせてください。
+  </p>
+
+  <div class="stamp">
+    <span class="s-pre">謝礼</span>
+    <span class="s-main">2,000</span>
+    <span class="s-unit">円</span>
+    <span class="s-post">お話いただいた方へ</span>
+  </div>
+
+  <a href="https://forms.gle/hVz2QgsSfMpo9wXS7" class="btn-main" target="_blank">
+    無料で相談する（約5〜10分）
+  </a>
+  <p class="hero-fine">※ 身分証の提示が必要です｜秘密厳守｜NPO法人運営</p>
+</section>
+
+<!-- torn edge -->
+<div class="torn">
+  <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="background:var(--paper)">
+    <path d="M0,0 C60,30 120,10 180,22 C240,34 300,8 360,18 C420,28 480,6 540,20 C600,34 660,10 720,22 C780,34 840,8 900,18 C960,28 1020,4 1080,16 C1140,28 1200,10 1260,20 C1320,30 1380,12 1440,20 L1440,40 L0,40 Z" fill="#EEE6D4"/>
+  </svg>
+</div>
+
+<!-- ===== INTRO ===== -->
+<section class="sec intro">
+  <div class="sec-inner reveal">
+    <span class="eyebrow">ABOUT</span>
+    <h2 class="sec-title">「Re:Voice」とは</h2>
+    <p>Re:Voiceは、生活や仕事で行き詰まりを感じている方の「心の声」を伺い、これからの再出発を共に考えるためのヒアリング調査プログラムです。NPO法人が運営し、住宅支援・手続き同行・就労支援など、リアルな支援につなげることを目的としています。<br><br>「相談できる人がいない」「何から手をつければいいかわからない」そんな方の最初の一歩を、一緒に踏み出します。</p>
+  </div>
+</section>
+
+<div class="torn">
+  <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="background:var(--paper2)">
+    <path d="M0,20 C80,5 160,32 240,18 C320,4 400,28 480,16 C560,4 640,30 720,18 C800,6 880,28 960,16 C1040,4 1120,30 1200,18 C1280,6 1360,28 1440,18 L1440,40 L0,40 Z" fill="#F7F1E8"/>
+  </svg>
+</div>
+
+<!-- ===== FOR WHO ===== -->
+<section class="sec for-who">
+  <div class="sec-inner wide">
+    <span class="eyebrow reveal" style="text-align:center;display:block;">こんな方へ</span>
+    <h2 class="sec-title reveal" style="text-align:center;">あなたも当てはまりませんか？</h2>
+    <div class="cards stagger">
+      <div class="card reveal"><span class="card-icon">💸</span><p>お金や食費・家賃の支払いに不安を感じている</p></div>
+      <div class="card reveal"><span class="card-icon">🏠</span><p>住まいが不安定、または住む場所に困っている</p></div>
+      <div class="card reveal"><span class="card-icon">💼</span><p>仕事を失った、または働けない状況にある</p></div>
+      <div class="card reveal"><span class="card-icon">📋</span><p>行政の手続きがわからなくて困っている</p></div>
+      <div class="card reveal"><span class="card-icon">🤐</span><p>誰にも相談できず、ひとりで抱え込んでいる</p></div>
+      <div class="card reveal"><span class="card-icon">🌱</span><p>今の状況から少しでも前に進みたいと思っている</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="torn">
+  <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="background:var(--paper)">
+    <path d="M0,10 C100,40 200,5 300,25 C400,45 500,8 600,22 C700,36 800,5 900,20 C1000,35 1100,8 1200,22 C1300,36 1380,15 1440,25 L1440,50 L0,50 Z" fill="#2B2318"/>
+  </svg>
+</div>
+
+<!-- ===== FLOW ===== -->
+<section class="sec flow">
+  <div class="sec-inner">
+    <span class="eyebrow reveal">FLOW</span>
+    <h2 class="sec-title reveal">相談の流れ</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-l"><div class="step-circle">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-title">フォームに記入（5〜10分）</div>
+          <div class="step-desc">今の状況や困っていることを、思ったままに入力してください。うまく文章にならなくて大丈夫です。</div>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-l"><div class="step-circle">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-title">事務局からご連絡</div>
+          <div class="step-desc">内容を拝見し、スタッフよりLINEまたはメールでご連絡します。緊急度の高い方を優先にご対応します。</div>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-l"><div class="step-circle">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-title">LINE通話でヒアリング</div>
+          <div class="step-desc">プライベートな空間で、担当スタッフとゆっくりお話しします。話したくないことは話さなくて大丈夫です。</div>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-l"><div class="step-circle">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-title">謝礼のお渡し＋支援へ</div>
+          <div class="step-desc">お話しいただいた方に謝礼2,000円をお渡しします。必要に応じて住宅支援・手続き同行など具体的なサポートにつなげます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="torn">
+  <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="background:var(--ink)">
+    <path d="M0,20 C120,5 240,35 360,18 C480,1 600,30 720,18 C840,6 960,32 1080,18 C1200,4 1320,28 1440,18 L1440,40 L0,40 Z" fill="#EEE6D4"/>
+  </svg>
+</div>
+
+<!-- ===== REWARD + FAQ ===== -->
+<section class="sec reward-faq">
+  <div class="sec-inner">
+    <span class="eyebrow reveal">REWARD</span>
+    <h2 class="sec-title reveal">謝礼について</h2>
+    <div class="receipt reveal">
+      <span class="receipt-label">ヒアリングに参加された方への謝礼</span>
+      <div class="receipt-amount"><span class="yen">¥</span>2,000<span class="unit">円</span></div>
+      <p class="receipt-desc">電話相談（ヒアリング）に進まれた方が対象です</p>
+      <hr class="receipt-divider">
+      <p class="receipt-notes">
+        ※ 謝礼のお渡し時に身分証明書の提示が必要です<br>
+        ※ フォーム送信のみでは謝礼の対象となりません<br>
+        ※ 受け取りを希望しない場合も相談は可能です
+      </p>
+    </div>
+
+    <span class="eyebrow reveal">FAQ</span>
+    <h2 class="sec-title reveal">よくある質問</h2>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span class="faq-q-tag">Q.</span>本名を伝えないといけませんか？</div>
+      <div class="faq-a">フォームはニックネームで構いません。謝礼お渡し時のみ、身分証でのご本人確認をお願いしています。</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q"><span class="faq-q-tag">Q.</span>話した内容は外部に漏れませんか？</div>
+      <div class="faq-a">ご記入・お話いただいた内容はNPO法人の個人情報保護方針に基づき厳重に管理します。許可なく外部に公開されることはありません。</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q"><span class="faq-q-tag">Q.</span>相談するだけでも大丈夫ですか？</div>
+      <div class="faq-a">もちろんです。話を聴いてほしいだけでも、何から始めればいいかわからない状態でも歓迎です。</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q"><span class="faq-q-tag">Q.</span>全員に連絡がきますか？</div>
+      <div class="faq-a">限られた体制で運営しているため、内容を拝見した上で順次ご連絡します。緊急度の高い方を優先しています。すべての方にご連絡できない場合があります。</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q"><span class="faq-q-tag">Q.</span>LINEがないと相談できませんか？</div>
+      <div class="faq-a">メールや電話でのやり取りも可能です。フォームでご希望をお知らせください。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NOTICE ===== -->
+<section class="sec notice">
+  <div class="notice-box reveal">
+    <h3>◇ 注意事項・免責事項</h3>
+    <ul>
+      <li>本プログラムは、NPO法人が運営する生活困窮者向けのヒアリング・支援活動です。</li>
+      <li>謝礼のお渡しには、身分証明書（運転免許証・マイナンバーカード等）のご提示が必要です。</li>
+      <li>本プログラムは医療・法律・金融の専門的アドバイスを提供するものではありません。</li>
+      <li>ご提供いただいた個人情報は、本プログラムの目的以外に使用しません。</li>
+      <li>すべてのお申し込みへのご連絡をお約束するものではありません。</li>
+      <li>緊急の場合は、各自治体の相談窓口や支援機関にもご連絡ください。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== SNS ===== -->
+<section class="sns-sec">
+  <div class="sns-inner reveal">
+    <h3>最新情報はSNSでも配信中</h3>
+    <p>活動情報やお知らせをチェックしてください</p>
+    <div class="sns-links">
+      <a href="https://x.com/re_voice_proj" class="sns-btn sns-x" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X（旧Twitter）
+      </a>
+      <a href="https://note.com/re_voice_proj" class="sns-btn sns-note" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.1 0H4.9C2.2 0 0 2.2 0 4.9v14.2C0 21.8 2.2 24 4.9 24h14.2c2.7 0 4.9-2.2 4.9-4.9V4.9C24 2.2 21.8 0 19.1 0zm-5 18.5H6.5V16h7.6v2.5zm3-5H6.5V11h10.6v2.5zm0-5H6.5V6h10.6v2.5z"/></svg>
+        note
+      </a>
+      <a href="https://lin.ee/zFmy421" class="sns-btn sns-line" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        公式LINE
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA CLOSE ===== -->
+<section class="cta-close">
+  <h2 class="reveal">一人で抱えないでください。<br>あなたの声を、聴かせてください。</h2>
+  <p class="reveal">相談は無料・秘密厳守・NPO法人運営</p>
+  <a href="https://forms.gle/hVz2QgsSfMpo9wXS7" class="btn-main reveal" target="_blank">無料で相談する（約5〜10分）</a>
+</section>
+
+<footer><p>© Re:Voice〜再出発の相談窓口〜｜NPO法人運営</p></footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
